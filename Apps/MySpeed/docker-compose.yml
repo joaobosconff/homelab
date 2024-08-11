@@ -1,0 +1,9 @@
+services:
+  myspeed:
+    container_name: myspeed
+    image: germannewsmaker/myspeed:1.0.9
+    ports:
+      - "5216:5216/tcp"
+    volumes:
+      - '/home-data/containers-config/myspeed/data:/myspeed/data'
+    restart: unless-stopped
