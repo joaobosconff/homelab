@@ -14,5 +14,5 @@ services:
       WEBPASSWORD: joao123
     volumes:
       - '/home-data/containers-config/pihole/etc-pihole:/etc/pihole'
-      - '/home-data/ontainers-config/pihole/etc-dnsmasq.d:/etc/dnsmasq.d'
+      - '/home-data/containers-config/pihole/etc-dnsmasq.d:/etc/dnsmasq.d'
     restart: unless-stopped
