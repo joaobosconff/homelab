@@ -6,5 +6,6 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - home-data/containers-config/homepage/config:/app/config # Make sure your local config directory exists
+      - /home-data/containers-config/homepage/config:/app/config # Make sure your local config directory exists
       - /var/run/docker.sock:/var/run/docker.sock # (optional) For docker integrations
+    restart: unless-stopped

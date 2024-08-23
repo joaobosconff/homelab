@@ -1,0 +1,82 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/latest/configs/services
+# icons found here https://github.com/walkxcode/dashboard-icons
+
+- Info:
+    - PC info:
+        widget:
+            type: glances
+            url: http://192.168.1.171:61208
+            metric: info
+            version: 4
+- CPU:
+    - CPU Usage:
+        widget:
+            type: glances
+            url: http://192.168.1.171:61208
+            metric: cpu
+            version: 4
+    - CPU Temps:
+        widget:
+            type: glances
+            url: http://192.168.1.171:61208
+            metric: sensor:soc_thermal 0
+            version: 4
+            chart: false
+
+- Memory and Process:
+    - Memory:
+        widget:
+            type: glances
+            url: http://192.168.1.171:61208
+            metric: memory
+            version: 4
+    - Processes:
+        widget:
+            type: glances
+            url: http://192.168.1.171:61208
+            metric: process
+            version: 4
+
+
+- Network:
+    - Usage:
+        widget:
+            type: glances
+            url: http://192.168.1.171:61208
+            metric: network:eth0
+            version: 4
+#    - Speed:
+#        widget:
+#            type: myspeed
+#            url: http://192.168.1.171:5216
+  
+
+
+
+
+
+- Services:
+    - Pi-Hole:
+        icon: pi-hole.svg
+        href: http://192.168.1.171:8800/admin/
+        description: AdBlock
+        widget:
+            type: pihole
+            url: http://192.168.1.171:8800/admin/
+            key: b27fe2c841a0abdaa3f6aee8855f25d3790a418daa8524a6945e48a5d2a1f0ec
+
+
+- Storage:
+    - OpenMediaVault:
+        icon: openmediavault.svg
+        href: http://192.168.1.171/
+        description: File Share
+        widget:
+            type: openmediavault
+            url: http://192.168.1.171/
+            username: admin
+            password: openmediavault
+            method: smart.getListBg # required
+

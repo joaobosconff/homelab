@@ -1,0 +1,21 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/latest/configs/service-widgets
+- datetime:
+    text_size: xl
+    format:
+      timeStyle: short
+
+- openmeteo:
+    label: Campina Grande # optional
+    latitude: -7.2306
+    longitude: -35.8811
+    timezone: America/Fortaleza 
+    units: metric # or imperial
+    cache: 5 # Time in minutes to cache API responses, to stay within limits
+    format: # optional, Intl.NumberFormat options
+      maximumFractionDigits: 1
+
+- search:
+    provider: duckduckgo
+    target: _blank

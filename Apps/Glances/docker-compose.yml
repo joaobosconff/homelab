@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  glances:
+    image: nicolargo/glances:latest-full
+    pid: host
+    network_mode: bridge
+    container_name: glances
+    ports:
+      - "61208:61208/tcp"
+      - "61208:61208/udp"
+      - "61209:61209/tcp"
+      - "61209:61209/udp"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - "GLANCES_OPT=-w"
+    restart: unless-stopped
