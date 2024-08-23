@@ -3,7 +3,7 @@ services:
   glances:
     image: nicolargo/glances:latest-full
     pid: host
-    network_mode: bridge
+    network_mode: host
     container_name: glances
     ports:
       - "61208:61208/tcp"

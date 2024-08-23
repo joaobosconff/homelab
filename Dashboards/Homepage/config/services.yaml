@@ -11,7 +11,6 @@
             metric: info
             version: 4
             chart: false
-- CPU:
     - CPU Usage:
         widget:
             type: glances
@@ -25,6 +24,7 @@
             metric: sensor:soc_thermal 0
             version: 4
             chart: false
+
 
 - Memory and Process:
     - Memory:
@@ -46,43 +46,13 @@
         widget:
             type: glances
             url: http://192.168.1.171:61208
-            metric: network:eth0
+            metric: network:end1
             version: 4
     - Speed:
+        href: http://192.168.1.171:5216
         widget:
             type: myspeed
             url: http://192.168.1.171:5216
-  
-
-
-
-- Services:
-    - Pi-Hole:
-        icon: pi-hole.svg
-        href: http://192.168.1.171:8800/admin
-        description: AdBlock
-        widget:
-            type: pihole
-            url: http://192.168.1.171:8800
-            key: b27fe2c841a0abdaa3f6aee8855f25d3790a418daa8524a6945e48a5d2a1f0ec
-    - qBittorrent:
-        icon: qbittorrent.svg
-        href: http://192.168.1.171:8181
-        description: Torrent
-        widget:
-            type: qbittorrent
-            url: http://192.168.1.171:8181
-            username: admin
-            password: adminadmin
-    - Portainer:
-        icon: portainer.svg
-        href: https://192.168.1.171:9443
-        widget:
-            type: portainer
-            url: https://192.168.1.171:9443
-            env: 2
-            key: ptr_FvWjc8j+akJLCgTszzivw4pHReM81QWZxARfKROqHjI=
-
 
 
 - Storage:
@@ -117,4 +87,33 @@
             metric: fs:/mnt/sdb1
             version: 4
             chart: false
+
+
+- Services:
+    - Pi-Hole:
+        icon: pi-hole.svg
+        href: http://192.168.1.171:8800/admin
+        description: AdBlock
+        widget:
+            type: pihole
+            url: http://192.168.1.171:8800
+            key: b27fe2c841a0abdaa3f6aee8855f25d3790a418daa8524a6945e48a5d2a1f0ec
+    - qBittorrent:
+        icon: qbittorrent.svg
+        href: http://192.168.1.171:8181
+        description: Torrent
+        widget:
+            type: qbittorrent
+            url: http://192.168.1.171:8181
+            username: admin
+            password: adminadmin
+    - Portainer:
+        icon: portainer.svg
+        href: https://192.168.1.171:9443
+        widget:
+            type: portainer
+            url: https://192.168.1.171:9443
+            env: 2
+            key: ptr_FvWjc8j+akJLCgTszzivw4pHReM81QWZxARfKROqHjI=
+
 
