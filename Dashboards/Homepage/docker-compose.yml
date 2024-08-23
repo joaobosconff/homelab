@@ -8,4 +8,5 @@ services:
     volumes:
       - /home-data/containers-config/homepage/config:/app/config # Make sure your local config directory exists
       - /var/run/docker.sock:/var/run/docker.sock # (optional) For docker integrations
+      - /home-data/containers-config/homepage/backgrounds:/app/public/images
     restart: unless-stopped

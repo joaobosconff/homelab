@@ -1,5 +1,4 @@
 version: '3'
-
 services:
   glances:
     image: nicolargo/glances:latest-full
@@ -13,6 +12,8 @@ services:
       - "61209:61209/udp"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - /srv/dev-disk-by-uuid-e66bd5ad-ebce-4e81-8fc6-807e649e60f5/:/mnt/sda1/ #HD 1
+      - /srv/dev-disk-by-uuid-ad0f6044-9c46-4358-bc7f-b260d6572b3e/:/mnt/sdb1/ #HD 2
     environment:
       - "GLANCES_OPT=-w"
     restart: unless-stopped
