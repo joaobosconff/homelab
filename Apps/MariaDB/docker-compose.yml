@@ -1,0 +1,20 @@
+version: '3'
+services:
+  mariadb:
+    image: linuxserver/mariadb:10.11.5
+    network_mode: host
+    container_name: mariadb
+    restart: unless-stopped
+    ports:
+      - "3306:3306/tcp"
+    volumes:
+      - /home-data/containers-config/mariadb/config:/config
+    environment:
+      - "PUID=$PUID"
+      - "PGID=$PGID"
+      - "TZ=$TZ"
+      - "MYSQL_ROOT_PASSWORD=root"
+      - "MYSQL_DATABASE=default"
+      - "MYSQL_USER=joao"
+      - "MYSQL_PASSWORD=joao"
+      - "REMOTE_SQL="

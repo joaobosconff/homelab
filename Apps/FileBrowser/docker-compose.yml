@@ -1,0 +1,18 @@
+version: "3"
+services:
+  filebrowser:
+    image: filebrowser/filebrowser:v2.30.0
+    network_mode: bridge
+    container_name: filebrowser
+    restart: unless-stopped
+    ports:
+      - "10180:80/tcp"
+    volumes:
+      - /home-data/containers-config/filebrowser/db:/db
+      - /home-data/containers-config/filebrowser/filebrowser.json:/filebrowser.json
+      - /:/srv
+    environment:
+      - "PUID=$PUID"
+      - "PGID=$PGID"
+      - "TZ=$TZ"
+#Default username and password : admin

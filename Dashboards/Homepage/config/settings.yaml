@@ -3,6 +3,8 @@
 # https://gethomepage.dev/latest/configs/settings
 
 title: Server Dashboard
+useEqualHeights: true
+language: pt
 background:
   image: /images/img1.jpg
   blur: sm # sm, "", md, xl... see https://tailwindcss.com/docs/backdrop-blur
@@ -10,8 +12,8 @@ background:
   brightness: 50 # 0, 50, 75... see https://tailwindcss.com/docs/backdrop-brightness
   opacity: 50 # 0-100
 
-
 headerStyle: clean
+
 
 
 

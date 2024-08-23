@@ -3,8 +3,8 @@
 # https://gethomepage.dev/latest/configs/services
 # icons found here https://github.com/walkxcode/dashboard-icons
 
-- Info:
-    - PC info:
+- PC Info:
+    - PC:
         widget:
             type: glances
             url: http://192.168.1.171:61208
@@ -50,6 +50,8 @@
             version: 4
     - Speed:
         href: http://192.168.1.171:5216
+        server: local-docker
+        container: myspeed
         widget:
             type: myspeed
             url: http://192.168.1.171:5216
@@ -94,6 +96,8 @@
         icon: pi-hole.svg
         href: http://192.168.1.171:8800/admin
         description: AdBlock
+        server: local-docker
+        container: pihole
         widget:
             type: pihole
             url: http://192.168.1.171:8800
@@ -102,6 +106,8 @@
         icon: qbittorrent.svg
         href: http://192.168.1.171:8181
         description: Torrent
+        server: local-docker
+        container: qbittorrent
         widget:
             type: qbittorrent
             url: http://192.168.1.171:8181
@@ -110,10 +116,31 @@
     - Portainer:
         icon: portainer.svg
         href: https://192.168.1.171:9443
+        server: local-docker
+        container: portainer
         widget:
             type: portainer
             url: https://192.168.1.171:9443
             env: 2
             key: ptr_FvWjc8j+akJLCgTszzivw4pHReM81QWZxARfKROqHjI=
+
+- Apps:
+    - MariaDB:
+        icon: mariadb.svg
+        description: Sql Database
+        server: local-docker
+        container: mariadb
+    - File Browser:
+        icon: /icons/filebrowser.png
+        description: File Browser
+        href: http://192.168.1.171:10180
+        server: local-docker
+        container: filebrowser
+    - Glances:
+        href: http://192.168.1.171:61208
+        icon: glances.png
+        description: System Monitor
+        server: local-docker
+        container: glances
 
 
