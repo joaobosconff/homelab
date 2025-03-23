@@ -3,16 +3,31 @@ services:
     container_name: pihole
     image: pihole/pihole:latest
     ports:
+      # DNS Ports
       - "53:53/tcp"
       - "53:53/udp"
-      - "67:67/udp" # Only required if you are using Pi-hole as your DHCP server
+      # Default HTTP Port
       - "8800:80/tcp"
+      # Default HTTPs Port. FTL will generate a self-signed certificate
+      - "443:443/tcp"
     environment:
-      TZ: $TZ
-      PROXY_LOCATION: pi.hole
-      VIRTUAL_HOST: pi.hole
-      WEBPASSWORD: joao123
+      # Set the appropriate timezone for your location (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones), e.g:
+      TZ: 'America/Recife'
+      # Set a password to access the web interface. Not setting one will result in a random password being assigned
+      FTLCONF_webserver_api_password: 'joao123'
+      # If using Docker's default `bridge` network setting the dns listening mode should be set to 'all'
+      FTLCONF_dns_listeningMode: 'all'
+      FTLCONF_dns_reply_host_force4: true
+      FTLCONF_dns_reply_host_IPv4: '192.168.1.171'
     volumes:
       - '/home-data/containers-config/pihole/etc-pihole:/etc/pihole'
       - '/home-data/containers-config/pihole/etc-dnsmasq.d:/etc/dnsmasq.d'
+    cap_add:
+      # See https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+      # Required if you are using Pi-hole as your DHCP server, else not needed
+      - NET_ADMIN
+      # Required if you are using Pi-hole as your NTP client to be able to set the host's system time
+      - SYS_TIME
+      # Optional, if Pi-hole should get some more processing time
+      - SYS_NICE
     restart: unless-stopped
