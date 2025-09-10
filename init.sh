@@ -12,6 +12,11 @@ require_root() {
   fi
 }
 
+have_cmd() { command -v "$1" >/dev/null 2>&1; }
+
+is_service_active() { systemctl is-active --quiet "$1" 2>/dev/null; }
+is_service_enabled() { systemctl is-enabled --quiet "$1" 2>/dev/null; }
+
 ensure_ubuntu() {
   if [[ ! -f /etc/os-release ]]; then
     echo "/etc/os-release não encontrado; não é um sistema compatível." >&2
@@ -26,6 +31,10 @@ ensure_ubuntu() {
 
 install_docker_ubuntu() {
   # Fonte: https://docs.docker.com/engine/install/ubuntu/
+  if have_cmd docker && is_service_active docker; then
+    echo "Docker já instalado e ativo; pulando."
+    return 0
+  fi
   apt-get update -y
   apt-get install -y ca-certificates curl gnupg
   install -m 0755 -d /etc/apt/keyrings
@@ -47,6 +56,10 @@ install_portainer() {
     echo "Docker não encontrado; instale o Docker antes do Portainer." >&2
     exit 1
   fi
+  if docker ps --format '{{.Names}}' | grep -q '^portainer$'; then
+    echo "Container Portainer já em execução; pulando."
+    return 0
+  fi
   docker volume create portainer_data >/dev/null 2>&1 || true
   if ! docker ps --format '{{.Names}}' | grep -q '^portainer$'; then
     docker run -d \
@@ -60,40 +73,63 @@ install_portainer() {
 }
 
 install_network_manager() {
-  apt-get update -y
-  apt-get install -y network-manager
-  systemctl enable --now NetworkManager
+  if is_service_active NetworkManager || dpkg -s network-manager >/dev/null 2>&1; then
+    echo "NetworkManager já instalado/ativo; pulando."
+  else
+    apt-get update -y
+    apt-get install -y network-manager
+  fi
+  systemctl enable --now NetworkManager || true
 }
 
 disable_systemd_networkd() {
   if systemctl list-unit-files | grep -q '^systemd-networkd.service'; then
-    systemctl disable --now systemd-networkd || true
-    systemctl mask systemd-networkd || true
+    if is_service_enabled systemd-networkd || is_service_active systemd-networkd; then
+      systemctl disable --now systemd-networkd || true
+      systemctl mask systemd-networkd || true
+    else
+      echo "systemd-networkd já desabilitado; pulando."
+    fi
   fi
 }
 
 create_containers_config_dir() {
-  mkdir -p /home-data/containers-config/
+  if [[ -d /home-data/containers-config/ ]]; then
+    echo "/home-data/containers-config/ já existe; pulando."
+  else
+    mkdir -p /home-data/containers-config/
+  fi
 }
 
 fix_pihole_port53_ubuntu() {
   # Baseado em práticas comuns para liberar a porta 53 no Ubuntu usando systemd-resolved
   if [[ -f /etc/systemd/resolved.conf ]]; then
-    sed -i 's/^#\?DNSStubListener=.*/DNSStubListener=no/' /etc/systemd/resolved.conf || true
-    if ! grep -q '^DNSStubListener=' /etc/systemd/resolved.conf; then
-      echo 'DNSStubListener=no' >> /etc/systemd/resolved.conf
+    if grep -q '^DNSStubListener=no' /etc/systemd/resolved.conf && [[ -L /etc/resolv.conf ]] && [[ "$(readlink -f /etc/resolv.conf)" == "/run/systemd/resolve/resolv.conf" ]]; then
+      echo "Correção da porta 53 já aplicada; pulando."
+    else
+      sed -i 's/^#\?DNSStubListener=.*/DNSStubListener=no/' /etc/systemd/resolved.conf || true
+      if ! grep -q '^DNSStubListener=' /etc/systemd/resolved.conf; then
+        echo 'DNSStubListener=no' >> /etc/systemd/resolved.conf
+      fi
+      systemctl restart systemd-resolved || true
+      if [[ -L /etc/resolv.conf || -f /etc/resolv.conf ]]; then
+        rm -f /etc/resolv.conf
+      fi
+      ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf || true
     fi
-    systemctl restart systemd-resolved || true
-    if [[ -L /etc/resolv.conf || -f /etc/resolv.conf ]]; then
-      rm -f /etc/resolv.conf
-    fi
-    ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf || true
   fi
 }
 
 install_powertop_hdparm() {
-  apt-get update -y
-  apt-get install -y powertop hdparm
+  local need=false
+  dpkg -s powertop >/dev/null 2>&1 || need=true
+  dpkg -s hdparm >/dev/null 2>&1 || need=true
+  if [[ "$need" == true ]]; then
+    apt-get update -y
+    apt-get install -y powertop hdparm
+  else
+    echo "powertop e hdparm já instalados; pulando."
+  fi
 }
 
 create_enable_services_from_units() {
@@ -106,9 +142,17 @@ create_enable_services_from_units() {
       local name
       name="$(basename "$unit" .service)"
       local target="/etc/systemd/system/${name}.service"
-      cp "$unit" "$target"
-      chmod 0644 "$target"
-      systemctl daemon-reload
+      local update_needed=1
+      if [[ -f "$target" ]]; then
+        if diff -q "$unit" "$target" >/dev/null 2>&1; then
+          update_needed=0
+        fi
+      fi
+      if [[ $update_needed -eq 1 ]]; then
+        cp "$unit" "$target"
+        chmod 0644 "$target"
+        systemctl daemon-reload
+      fi
       systemctl enable --now "$name" || true
     done
     shopt -u nullglob
