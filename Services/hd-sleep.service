@@ -9,9 +9,3 @@ ExecStart=/usr/sbin/hdparm -S 120 /dev/disk/by-uuid/e66bd5ad-ebce-4e81-8fc6-807e
 
 [Install]
 WantedBy=multi-user.target
-
-
----
-
-sudo nano /etc/systemd/system/hd-sleep.service
-sudo systemctl enable /etc/systemd/system/hd-sleep.service
