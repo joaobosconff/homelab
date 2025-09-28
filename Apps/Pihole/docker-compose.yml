@@ -14,11 +14,10 @@ services:
       # Set the appropriate timezone for your location (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones), e.g:
       TZ: 'America/Recife'
       # Set a password to access the web interface. Not setting one will result in a random password being assigned
-      FTLCONF_webserver_api_password: 'joao123'
+      FTLCONF_webserver_api_password: 'admin123'
       # If using Docker's default `bridge` network setting the dns listening mode should be set to 'all'
       FTLCONF_dns_listeningMode: 'all'
       FTLCONF_dns_reply_host_force4: true
-      FTLCONF_dns_reply_host_IPv4: '192.168.1.171'
     volumes:
       - '/home-data/containers-config/pihole/etc-pihole:/etc/pihole'
       - '/home-data/containers-config/pihole/etc-dnsmasq.d:/etc/dnsmasq.d'
