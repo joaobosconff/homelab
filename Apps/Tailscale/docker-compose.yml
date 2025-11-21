@@ -8,13 +8,8 @@ services:
     volumes:
       - /home-data/containers-config/tailscale/state:/var/lib/tailscale
       - /dev/net/tun:/dev/net/tun
-    environment:
-      - TS_USERSPACE=false
-      - TS_STATE_DIR=/var/lib/tailscale
-      - TS_ACCEPT_DNS=true
     cap_add:
       - NET_ADMIN
-      - SYS_MODULE
     # Web interface: exposta automaticamente na porta 5252
     # Acesse em http://<tailscale-ip>:5252 dentro da tailnet
     # Ou em http://100.100.100.100:5252 (IP local do Tailscale)
