@@ -1,0 +1,33 @@
+version: "3"
+services:
+  tailscale:
+    image: tailscale/tailscale:latest
+    container_name: tailscale
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - /home-data/containers-config/tailscale/state:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      - TS_USERSPACE=false
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_ACCEPT_DNS=true
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    # Web interface: exposta automaticamente na porta 5252
+    # Acesse em http://<tailscale-ip>:5252 dentro da tailnet
+    # Ou em http://100.100.100.100:5252 (IP local do Tailscale)
+    # Nota: Configure TS_AUTHKEY no arquivo .env ou como variável de ambiente
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        tailscaled --state=/var/lib/tailscale/tailscaled.state &
+        TAILSCALED_PID=$!
+        sleep 15
+        tailscale web --listen 0.0.0.0:5252 &
+        WEB_PID=$!
+        # Aguarda ambos os processos
+        wait $TAILSCALED_PID $WEB_PID
+
